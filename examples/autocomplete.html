@@ -1,0 +1,56 @@
+<!doctype html>
+<!-- TeleHost Maps · ejemplo: autocomplete de direcciones (tolerante a typos) con debounce -->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TeleHost Maps · Autocomplete</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:480px;margin:40px auto;padding:0 16px}
+  input{width:100%;font-size:16px;padding:12px 14px;border:1px solid #ccc;border-radius:10px;box-sizing:border-box}
+  #sug{list-style:none;margin:6px 0;padding:0;border:1px solid #eee;border-radius:10px;overflow:hidden}
+  #sug li{padding:10px 14px;cursor:pointer} #sug li:hover{background:#f5f5f5}
+  #sug small{color:#777} #sel{margin-top:14px;color:#1a7f37;font-weight:600}
+</style>
+</head>
+<body>
+<h3>¿A dónde te lo llevamos? 🛵</h3>
+<input id="dir" placeholder="Escribe tu dirección o un lugar…" autocomplete="off"/>
+<ul id="sug"></ul>
+<div id="sel"></div>
+
+<script>
+const BASE = 'https://maps.telehost.net';
+// Pasa la ubicación del usuario para sesgar los resultados a su ciudad:
+let userLat = 8.6231, userLon = -70.2072;
+navigator.geolocation?.getCurrentPosition(p => { userLat = p.coords.latitude; userLon = p.coords.longitude; });
+
+const $q = document.getElementById('dir'), $sug = document.getElementById('sug'), $sel = document.getElementById('sel');
+let timer = null;
+
+$q.addEventListener('input', () => {
+  clearTimeout(timer);
+  if ($q.value.trim().length < 3) { $sug.innerHTML = ''; return; }
+  timer = setTimeout(buscar, 275);              // debounce
+});
+
+async function buscar() {
+  const u = `${BASE}/autocomplete?q=${encodeURIComponent($q.value)}&lat=${userLat}&lon=${userLon}&lang=es&limit=5`;
+  const d = await (await fetch(u)).json();
+  $sug.innerHTML = (d.features || []).map((f, i) => {
+    const p = f.properties, lugar = [p.city || p.county, p.state].filter(Boolean).join(', ');
+    return `<li data-i="${i}"><b>${p.name || p.street || '—'}</b><br><small>${lugar}</small></li>`;
+  }).join('');
+  $sug.querySelectorAll('li').forEach(li => li.onclick = () => elegir(d.features[+li.dataset.i]));
+}
+
+function elegir(f) {
+  const [lon, lat] = f.geometry.coordinates;
+  $q.value = f.properties.name || '';
+  $sug.innerHTML = '';
+  $sel.textContent = `✅ Destino: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  // → con este lat/lon ya puedes cotizar el delivery (ver examples/backend-api.md)
+}
+</script>
+</body>
+</html>

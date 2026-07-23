@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- TeleHost Maps · ejemplo: mapa interactivo con MapLibre GL JS + marcador + ruta -->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TeleHost Maps · MapLibre</title>
+<script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" rel="stylesheet"/>
+<style>html,body{margin:0;height:100%}#map{height:100%}</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+const BASE = 'https://maps.telehost.net';
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: BASE + '/styles/liberty/style.json',   // 'hybrid' = satélite
+  center: [-70.2072, 8.6231],                   // [lon, lat] — Barinas
+  zoom: 13
+});
+map.addControl(new maplibregl.NavigationControl());
+map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true } }));
+
+// Marcador con popup
+new maplibregl.Marker({ color: '#FB3A0A' })
+  .setLngLat([-70.2072, 8.6231])
+  .setPopup(new maplibregl.Popup({ offset: 16 }).setHTML('<b>Mi negocio</b>'))
+  .addTo(map);
+
+// Dibujar una ruta real (tienda → cliente)
+async function dibujarRuta(desde, hasta) {  // [lon,lat]
+  const r = await fetch(`${BASE}/route/ve/route/v1/driving/${desde};${hasta}?overview=full&geometries=geojson`);
+  const d = await r.json();
+  if (d.code !== 'Ok') return;
+  const ruta = d.routes[0];
+  console.log(`${(ruta.distance/1000).toFixed(1)} km · ${Math.round(ruta.duration/60)} min`);
+  map.addSource('ruta', { type: 'geojson', data: { type: 'Feature', geometry: ruta.geometry } });
+  map.addLayer({ id: 'ruta', type: 'line', source: 'ruta',
+    paint: { 'line-color': '#1a73e8', 'line-width': 5, 'line-opacity': 0.85 } });
+}
+map.on('load', () => dibujarRuta('-70.2072,8.6231', '-70.1850,8.6450'));
+</script>
+</body>
+</html>
