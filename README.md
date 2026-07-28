@@ -1,28 +1,32 @@
 # TeleHost Maps — SDK y ejemplos de integración
 
 <p align="center">
-  <b>Mapas, geocoding, autocomplete, rutas y logística para Venezuela y Colombia.</b><br/>
+  <b>Mapas, geocoding, rutas, logística de delivery y cargo marítimo para Venezuela y Colombia.</b><br/>
   Infraestructura propia en LATAM · datos OpenStreetMap · sin límites de Google · precios en USD.
 </p>
 
-🌐 **Demo en vivo:** https://maps.telehost.net
+🌐 **Demo en vivo:** https://maps.telehost.net · 🧑‍💻 **Portal de desarrolladores:** https://maps.telehost.net/dev/
 
 ---
 
 ## ¿Qué es TeleHost Maps?
 
-Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehost.net) pensada para **apps de delivery, ride-hailing, e-commerce y logística** en Venezuela y Colombia:
+Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehost.net) pensada para **apps de delivery, ride-hailing, e-commerce y logística de carga** en Venezuela y Colombia:
 
 | Capacidad | Reemplaza a |
 |---|---|
-| 🗺️ Mapas vectoriales (calles + satélite) | Google Maps SDK / Mapbox |
+| 🗺️ Mapas vectoriales (calles, satélite, náutico mundial) | Google Maps SDK / Mapbox |
 | 🔎 Autocomplete tolerante a errores | Google Places Autocomplete |
-| 📍 Geocoding y reverse | Google Geocoding API |
-| 🛣️ Rutas y matriz de distancias reales | Directions / Distance Matrix / Routes API |
-| 🧭 Optimización de rutas multi-parada | Route Optimization API |
+| 📍 Geocoding, reverse y detección de país (frontera real VE/CO) | Google Geocoding API |
+| 🛣️ Rutas y matriz de distancias reales — con **perfil MOTO** 🛵 | Directions / Distance Matrix |
+| 🧭 Optimización de rutas multi-parada (hasta 50) | Route Optimization API |
 | ⏱️ Isócronas (zonas de cobertura por tiempo) | — (Google no lo ofrece) |
-| 🛵 Tracking GPS de repartidores | — |
+| 📦 Pedidos con **tracking en vivo para el cliente** + ETA dinámico | — (como Uber Eats, pero tuyo) |
+| 🛵 Despacho al repartidor más cercano (matriz OSRM real) | — |
+| ⛽ Costo de combustible por viaje | — |
 | 💳 Cobro del delivery por distancia (USD, pago en Bs) | — |
+| 🚢 **Cargo:** rutas marítimas reales, buques AIS en vivo, 3.804 puertos | MarineTraffic / Searates |
+| 🤖 Servidor MCP para agentes de IA | — |
 
 ## Inicio en 30 segundos
 
@@ -46,23 +50,31 @@ Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehos
 GET https://maps.telehost.net/autocomplete?q=farmac&lat=8.62&lon=-70.20&lang=es&limit=5
 ```
 
-**Ruta con distancia y tiempo reales:**
+**Ruta real en moto (el ETA honesto para delivery):**
 ```
-GET https://maps.telehost.net/route/ve/route/v1/driving/-70.2072,8.6231;-70.1850,8.6450?overview=false
+GET https://maps.telehost.net/route/ve-moto/route/v1/driving/-70.2072,8.6231;-70.1850,8.6450?overview=false
+```
+
+**Buques en vivo en el Caribe (para tu app de cargo):**
+```
+GET https://maps.telehost.net/ais/ships?bbox=-73,9,-59,13
 ```
 
 ## Contenido de este repo
 
 ```
-docs/API.md            Referencia de la API (pública y de producto)
+docs/API.md            Referencia completa de la API (pública y con clave)
+docs/DELIVERY.md       Guía de delivery: cotizar → pedido → despachar → trackear → cobrar
+docs/CARGO.md          Guía de cargo marítimo: rutas, buques AIS, puertos, mapa náutico
 embed/embed.js         Widget de mapa embebible (fuente)
 examples/
   web-maplibre.html    Mapa interactivo con MapLibre GL JS
   autocomplete.html    Buscador con sugerencias (patrón debounce)
+  cargo-tracker.html   Mapa náutico con buques en vivo y puertos (solo endpoints públicos)
   android-kotlin.md    Integración Android (MapLibre Native)
   ios-swift.md         Integración iOS (MapLibre Native)
   flutter.md           Integración Flutter (maplibre_gl)
-  backend-api.md       Cotizar/cobrar delivery, optimizar rutas, tracking (API key)
+  backend-api.md       Flujo completo de delivery desde tu backend (API key)
 ```
 
 ## Apps móviles sin SDK de Google
@@ -70,27 +82,32 @@ examples/
 Tu app Android/iOS/Flutter usa **[MapLibre Native](https://maplibre.org/)** (open source) apuntando al estilo de TeleHost:
 
 ```
-https://maps.telehost.net/styles/liberty/style.json     ← calles
+https://maps.telehost.net/styles/telehost/style.json    ← calles (estilo de la casa)
 https://maps.telehost.net/styles/hybrid/style.json      ← satélite + etiquetas
+https://maps.telehost.net/styles/cargo/style.json       ← náutico mundial (para cargo)
 ```
 
 Sin API key de Google, sin billing, sin cuotas por carga de mapa. Ver [examples/](examples/).
 
-## API Keys (funciones de producto)
+## API Keys — portal de desarrolladores
 
-Las funciones de logística (cotización y cobro de delivery, optimización de rutas, isócronas, tracking GPS) requieren una **API key comercial**.
+Las funciones de producto (pedidos, despacho, cobro, optimización, isócronas, tracking GPS, rutas marítimas) requieren una **API key** con formato `thmk_…`, enviada como `x-api-key: thmk_…` o `Authorization: Bearer thmk_…`.
 
-📩 Solicítala en **info.telehost@gmail.com** — planes desde $0 para probar.
+🧑‍💻 **Creá tu clave en https://maps.telehost.net/dev/** — las claves nuevas quedan *pendientes de aprobación* (te avisamos al aprobarla). También podés escribirnos: **info.telehost@gmail.com** — planes desde $0 para probar.
+
+> ⚠️ La clave vive en **tu backend** (variable de entorno). Nunca la pongas en el frontend ni en la app móvil.
 
 ## Uso justo
 
-Los endpoints públicos (mapa, geocoding, autocomplete, rutas) están abiertos para desarrollo y evaluación. Para uso en producción con volumen, contáctanos para un plan — así mantenemos el servicio rápido para todos.
+Los endpoints públicos (mapa, geocoding, autocomplete, rutas, buques por zona, puertos) están abiertos para desarrollo y evaluación, con límites suaves por IP. Para producción con volumen, pedí tu clave — así mantenemos el servicio rápido para todos.
 
 ## Atribuciones
 
 - Datos de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Muestra la atribución en tu mapa.
 - Imágenes satelitales © Esri World Imagery (atribución requerida).
-- Render: [MapLibre](https://maplibre.org/) (BSD-3). Rutas: [OSRM](http://project-osrm.org/). Geocoding: [Nominatim](https://nominatim.org/) / [Photon](https://photon.komoot.io/).
+- Basemap mundial: [Natural Earth](https://www.naturalearthdata.com/) (dominio público).
+- Puertos: World Port Index (NGA) + UN/LOCODE.
+- Render: [MapLibre](https://maplibre.org/) (BSD-3). Rutas: [OSRM](http://project-osrm.org/). Geocoding: [Nominatim](https://nominatim.org/) / [Photon](https://photon.komoot.io/). Rutas marítimas: red MARNET vía [searoute](https://github.com/eurostat/searoute).
 
 ## Licencia
 

@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- TeleHost Maps · ejemplo CARGO: mapa náutico + buques AIS en vivo + puertos.
+     Solo endpoints PÚBLICOS — este archivo funciona abriéndolo tal cual, sin API key.
+
+     El estilo `cargo` YA TRAE las capas de puertos y buques cargadas: acá solo
+     refrescamos los buques con el bbox de lo que se ve, y agregamos popups. -->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TeleHost Maps · Cargo tracker</title>
+<script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" rel="stylesheet"/>
+<style>
+  html,body{margin:0;height:100%}#map{height:100%}
+  #hud{position:fixed;top:10px;left:10px;background:#101418cc;color:#eee;font:13px system-ui;
+       padding:8px 12px;border-radius:10px;z-index:2}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="hud">⛴️ cargando buques…</div>
+<script>
+const BASE = 'https://maps.telehost.net';
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: BASE + '/styles/cargo/style.json',   // náutico mundial — trae puertos y buques de fábrica
+  center: [-68.5, 11.2],                      // Caribe venezolano
+  zoom: 6
+});
+map.addControl(new maplibregl.NavigationControl());
+
+// ---- refrescar los buques del estilo con lo que se ve en pantalla ----
+// /ais/ships es público (cache 10 s) y acepta bbox de hasta 180°x120°.
+function bboxVisible() {
+  const b = map.getBounds();
+  let w = Math.max(b.getWest(), -180), e = Math.min(b.getEast(), 180);
+  let s = Math.max(b.getSouth(), -60), n = Math.min(b.getNorth(), 60);
+  if (e - w > 180) { const c = (e + w) / 2; w = c - 90; e = c + 90; }   // recorte al máximo permitido
+  return [w, s, e, n].map(x => x.toFixed(2)).join(',');
+}
+async function cargarBuques() {
+  try {
+    const d = await fetch(`${BASE}/ais/ships?bbox=${bboxVisible()}`).then(r => r.json());
+    if (!d.features) return;                                  // 400 (bbox raro) → conservar lo anterior
+    map.getSource('buques').setData(d);                       // el source ya existe en el estilo
+    const activos = d.features.filter(f => !f.properties.stale).length;
+    document.getElementById('hud').textContent = `⛴️ ${activos} buques en vivo · ${d.features.length} en zona`;
+  } catch (e) { console.warn('AIS:', e); }
+}
+
+map.on('load', () => {
+  cargarBuques();
+  setInterval(cargarBuques, 15000);          // el servidor cachea 10 s: 15 s es un buen ritmo
+  map.on('moveend', cargarBuques);
+
+  // popup sobre la capa 'buques' que trae el estilo
+  map.on('click', 'buques', e => {
+    const p = e.features[0].properties;
+    const stale = p.stale === true || p.stale === 'true';
+    new maplibregl.Popup().setLngLat(e.features[0].geometry.coordinates)
+      .setHTML(`<b>${p.name || 'MMSI ' + p.mmsi}</b><br/>
+                → ${p.dest || 'destino desconocido'}<br/>
+                ${(+p.sog || 0).toFixed(1)} nudos ${stale ? '· ⚠️ sin señal >30 min' : ''}`)
+      .addTo(map);
+  });
+  map.on('mouseenter', 'buques', () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', 'buques', () => map.getCanvas().style.cursor = '');
+});
+
+// Con tu API key (scope cargo) sumarías desde TU BACKEND:
+//   GET /api/biz/searoute?from=114.27,22.59&to=-68.01,10.48  → la ruta planificada (LineString)
+//   GET /api/biz/ais/ship/{mmsi}                             → seguir un buque puntual
+// Ver docs/CARGO.md — la clave nunca va en este HTML.
+</script>
+</body>
+</html>
