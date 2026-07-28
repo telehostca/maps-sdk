@@ -171,3 +171,5 @@ curl -X POST "$MAPS/api/biz/isochrone/check" -H "x-api-key: $KEY" -H "Content-Ty
 - Cuota diaria por clave — ¿te quedás corto? Pedí más en [/dev/](https://maps.telehost.net/dev/).
 
 Código listo para copiar (curl + PHP/Laravel): [examples/backend-api.md](../examples/backend-api.md).
+¿Querés ver las moticos moviéndose en el mapa como en las apps de ride-hailing?
+Abrí [examples/flota-viva.html](../examples/flota-viva.html) — markers rotando por `course`, sin clave.

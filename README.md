@@ -71,6 +71,7 @@ examples/
   web-maplibre.html    Mapa interactivo con MapLibre GL JS
   autocomplete.html    Buscador con sugerencias (patrón debounce)
   cargo-tracker.html   Mapa náutico con buques en vivo y puertos (solo endpoints públicos)
+  flota-viva.html      Moticos moviéndose y rotando en vivo (estilo ride-hailing)
   android-kotlin.md    Integración Android (MapLibre Native)
   ios-swift.md         Integración iOS (MapLibre Native)
   flutter.md           Integración Flutter (maplibre_gl)

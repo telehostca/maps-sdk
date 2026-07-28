@@ -1,0 +1,115 @@
+<!doctype html>
+<!-- TeleHost Maps · demo FLOTA VIVA: moticos moviéndose y rotando sobre el mapa,
+     como las apps de ride-hailing — en el rojo-naranja TeleHost.
+
+     Este demo NO usa API key (nada de claves en un HTML): las motos se animan
+     sobre RUTAS OSRM REALES de Maracaibo pedidas al endpoint público. En tu app,
+     las posiciones vienen de tu backend — el código real está al final. -->
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TeleHost Maps · Flota viva</title>
+<script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" rel="stylesheet"/>
+<style>
+  :root { --th-rojo:#ED3237; --th-naranja:#FB3A0A; }
+  html,body{margin:0;height:100%}#map{height:100%}
+  #hud{position:fixed;top:10px;left:10px;z-index:2;background:#fff;color:#202124;
+       font:600 13px system-ui;padding:8px 14px;border-radius:999px;
+       box-shadow:0 2px 10px #0003;border:2px solid var(--th-rojo)}
+  .moto{width:34px;height:34px;cursor:pointer;filter:drop-shadow(0 2px 3px #0005)}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="hud">🛵 armando la flota…</div>
+<script>
+const BASE = 'https://maps.telehost.net';
+const map = new maplibregl.Map({
+  container: 'map',
+  style: BASE + '/styles/telehost/style.json',
+  center: [-71.63, 10.65],            // Maracaibo
+  zoom: 13
+});
+map.addControl(new maplibregl.NavigationControl());
+
+// ---- el ícono: flecha-moto en degradé rojo→naranja TeleHost, apunta al Norte ----
+function iconoMoto(id) {
+  const el = document.createElement('div');
+  el.className = 'moto';
+  el.innerHTML = `<svg viewBox="0 0 34 34" width="34" height="34">
+    <defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FB3A0A"/><stop offset="1" stop-color="#ED3237"/>
+    </linearGradient></defs>
+    <path d="M17 2 L27 28 L17 22 L7 28 Z" fill="url(#g${id})" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"/>
+  </svg>`;
+  return el;
+}
+
+// ---- SIMULACIÓN: pedimos rutas REALES a OSRM (público) y las recorremos ----
+// Cinco viajes por Maracaibo; cada moto va y vuelve por calles de verdad.
+const VIAJES = [
+  [[-71.612,10.682],[-71.661,10.641]],
+  [[-71.640,10.664],[-71.597,10.658]],
+  [[-71.655,10.625],[-71.618,10.672]],
+  [[-71.590,10.640],[-71.645,10.690]],
+  [[-71.628,10.633],[-71.606,10.696]],
+];
+const rumbo = (a, b) => (Math.atan2(b[0]-a[0], b[1]-a[1]) * 180 / Math.PI + 360) % 360;
+
+async function rutaReal([o, d]) {
+  const r = await fetch(`${BASE}/route/ve/route/v1/driving/${o};${d}?overview=full&geometries=geojson`);
+  const j = await r.json();
+  return j.routes?.[0]?.geometry.coordinates || null;
+}
+
+map.on('load', async () => {
+  const flota = [];
+  for (let i = 0; i < VIAJES.length; i++) {
+    const linea = await rutaReal(VIAJES[i].map(p => p.join(',')));
+    if (!linea) continue;
+    const marker = new maplibregl.Marker({ element: iconoMoto(i), rotationAlignment: 'map' })
+      .setLngLat(linea[0])
+      .setPopup(new maplibregl.Popup({ offset: 18 }).setHTML(`<b>moto-${i + 1}</b><br/>en servicio 🛵`))
+      .addTo(map);
+    flota.push({ marker, linea, seg: 0, t: Math.random() });   // t = avance dentro del segmento
+  }
+  document.getElementById('hud').textContent = `🛵 ${flota.length} motos en vivo · Maracaibo`;
+
+  // ~40 km/h: avanza un paso por frame proporcional al largo del segmento
+  function animar() {
+    for (const m of flota) {
+      const a = m.linea[m.seg], b = m.linea[m.seg + 1];
+      if (!b) { m.linea.reverse(); m.seg = 0; m.t = 0; continue; }   // llegó: da la vuelta
+      const paso = 0.00012 / (Math.hypot(b[0]-a[0], b[1]-a[1]) + 1e-9);
+      m.t += Math.min(paso, 0.5);
+      if (m.t >= 1) { m.seg++; m.t = 0; continue; }
+      m.marker.setLngLat([a[0] + (b[0]-a[0]) * m.t, a[1] + (b[1]-a[1]) * m.t]);
+      m.marker.setRotation(rumbo(a, b));                             // apunta hacia donde va
+    }
+    requestAnimationFrame(animar);
+  }
+  animar();
+});
+
+/* ============================================================================
+   ASÍ ES EN TU APP DE VERDAD (sin simulación):
+
+   1) La app del repartidor manda su GPS cada 3-5 s — CON TU CLAVE, DESDE TU BACKEND:
+        POST /api/biz/tracking/position   {"device_id":"moto1","lat":…,"lon":…,"speed":28,"course":135}
+
+   2) Tu backend expone las posiciones a tu app (la clave thmk_ nunca sale de él):
+        GET /api/biz/tracking/positions   → [{device_id, lat, lon, speed, course, …}]
+
+   3) La app refresca los markers cada 3-5 s con esos datos:
+        marker.setLngLat([p.lon, p.lat]);
+        marker.setRotation(p.course);      // el rumbo que ya te manda el GPS
+
+   4) ¿Cuál moto conviene para un pedido? No lo calcules vos:
+        POST /api/biz/delivery/dispatch   {"pickup":{lat,lon},"vehiculo":"moto"}
+        → candidatos ordenados por TIEMPO real de vías.       docs/DELIVERY.md
+   ========================================================================= */
+</script>
+</body>
+</html>
