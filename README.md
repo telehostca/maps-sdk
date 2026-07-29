@@ -1,7 +1,8 @@
 # TeleHost Maps — SDK y ejemplos de integración
 
 <p align="center">
-  <b>Mapas, geocoding, rutas, logística de delivery y cargo marítimo para Venezuela y Colombia.</b><br/>
+  <b>Mapas, geocoding, rutas, logística de delivery y cargo marítimo.</b><br/>
+  Mapa con calles en <b>27 áreas</b> de América y España · rutas y geocodificación en Venezuela y Colombia.<br/>
   Infraestructura propia en LATAM · datos OpenStreetMap · sin límites de Google · precios en USD.
 </p>
 
@@ -11,11 +12,11 @@
 
 ## ¿Qué es TeleHost Maps?
 
-Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehost.net) pensada para **apps de delivery, ride-hailing, e-commerce y logística de carga** en Venezuela y Colombia:
+Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehost.net) pensada para **apps de delivery, ride-hailing, e-commerce y logística de carga**:
 
 | Capacidad | Reemplaza a |
 |---|---|
-| 🗺️ Mapas vectoriales (calles, satélite, náutico mundial) | Google Maps SDK / Mapbox |
+| 🗺️ Mapas vectoriales — **27 áreas** con calles (LATAM, España, EE.UU.) + planeta | Google Maps SDK / Mapbox |
 | 🔎 Autocomplete tolerante a errores | Google Places Autocomplete |
 | 📍 Geocoding, reverse y detección de país (frontera real VE/CO) | Google Geocoding API |
 | 🛣️ Rutas y matriz de distancias reales — con **perfil MOTO** 🛵 | Directions / Distance Matrix |

@@ -18,7 +18,7 @@ GET /styles/{id}/style.json
 ```
 | id | qué es |
 |---|---|
-| `telehost` | calles VE+CO, el estilo de la casa (recomendado) |
+| `telehost` | calles, el estilo de la casa (recomendado) — 27 áreas |
 | `cargo` | náutico mundial: fondo marino, para apps de carga (ver [CARGO.md](CARGO.md)) |
 | `hybrid` | satélite + etiquetas |
 | `satellite` | satélite puro |
@@ -27,9 +27,22 @@ GET /styles/{id}/style.json
 
 ### TileJSON (fuentes de datos)
 ```
-GET /data/veco.json     detalle z14 de Venezuela + Colombia
+GET /data/detalle.json  detalle de calles z14 — 27 áreas (ver cobertura abajo)
 GET /data/world.json    planeta z0-7 (cubre la travesía China→VE completa)
 ```
+
+### ⚠️ Cobertura: no es igual en todas las capas
+
+| capa | dónde |
+|---|---|
+| **Mapa con calles** (tiles, estilos, estático, embed) | **27 áreas**: toda América Latina —Brasil incluido—, España y EE.UU. |
+| Mapa mundial (menor detalle) | el planeta entero |
+| Satélite | mundial. Detalle real hasta z18-z20 según el lugar (más profundo en grandes ciudades) |
+| **Rutas, matriz, TSP, map matching, snap** | **Venezuela y Colombia** |
+| **Geocodificación y autocompletar** | **Venezuela y Colombia** |
+
+O sea: podés **mostrar** el mapa de Ciudad de México, São Paulo o Miami hoy mismo; para
+**rutear o buscar direcciones** ahí, escribinos — agregar un país es un proceso conocido.
 
 ### Mapa estático PNG (ideal para WhatsApp)
 ```
