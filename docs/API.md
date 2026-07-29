@@ -75,11 +75,42 @@ GET /route/{perfil}/route/v1/driving/{lonA},{latA};{lonB},{latB}?overview=false
 ```
 Perfiles: `ve` · `co` (carro) · **`ve-moto`** 🛵 — la moto filtra tráfico y usa callejones: su ETA urbano es ~15-30 % menor. Es el ETA honesto para delivery en moto.
 
-### Matriz de distancias (repartidor más cercano, N×M)
+### Matriz de distancias (N×M) — *Distance Matrix*
 ```
 GET /route/{perfil}/table/v1/driving/{p1};{p2};...?sources=0;1&destinations=2&annotations=duration,distance
+→ { "durations":[[s,…],…], "distances":[[m,…],…], "sources":[…], "destinations":[…] }
 ```
+Tiempos y distancias **por vías reales** entre todos los pares. Sin límite de elementos por request.
 > 💡 Si solo querés "¿quién está más cerca?", usá [`POST /api/biz/delivery/dispatch`](#-despacho-al-repartidor-más-cercano) — hace la matriz por vos contra tu flota real.
+
+### Orden óptimo de paradas (TSP) — *Optimization*
+```
+GET /route/{perfil}/trip/v1/driving/{p1};{p2};{p3};...?overview=false
+→ { "code":"Ok",
+    "trips":[ { "distance":42385, "duration":3324, "geometry":… } ],
+    "waypoints":[ { "waypoint_index":0, "trips_index":0, "name":"Calle 10. Camejo" }, … ] }
+```
+`waypoint_index` es **el orden en que hay que visitarlos** (los waypoints vuelven en el orden que los mandaste; el índice te dice el lugar en la ruta). Viaje cerrado por defecto: agregá `&roundtrip=false&source=first&destination=last` para dejarlo abierto.
+> Diferencia con `route/optimize` (🔑): `trip` es un solo vehículo sin ventanas de tiempo ni tiempos de servicio. Para repartir entre **varias** motos con ETAs por parada, usá `route/optimize` (VROOM).
+
+### Pegar una traza GPS a las calles (*map matching*)
+```
+GET /route/{perfil}/match/v1/driving/{p1};{p2};...?overview=full&geometries=geojson
+    &timestamps={unix1};{unix2};…      ← recomendado
+    &radiuses={m1};{m2};…              ← precisión del GPS en metros
+→ { "matchings":[ { "confidence":0.98, "geometry":…, "distance":…, "duration":… } ],
+    "tracepoints":[ { "matchings_index":0, "name":"Av. 18 Guárico", "distance":12.3 }, … ] }
+```
+Toma el rastro sucio del GPS del repartidor y devuelve **por qué calles pasó de verdad** — para auditar recorridos, cobrar por km reales o limpiar historiales. `tracepoints[i].distance` es cuánto se movió cada punto al pegarlo.
+> ⚠️ **Mandá la traza COMPLETA, no una muestra.** Medido en este servidor: 3 puntos dispersos dan `confidence` ≈ 0 (`2.2e-16`) aunque mandes timestamps; 18 puntos (uno cada ~9 s) dan **0.73**, y con `timestamps`+`radiuses` suben a **0.90**. Máx 100 puntos por request.
+
+### Punto exacto sobre la vía (*snap*)
+```
+GET /route/{perfil}/nearest/v1/driving/{lon},{lat}?number=1
+→ { "waypoints":[ { "location":[-70.207151,8.623147],
+                    "name":"Calle 10. Camejo", "distance":7.49 } ] }
+```
+`distance` = metros desde el punto que mandaste hasta la vía. Sirve para validar direcciones ("¿esto cae en una calle?"), corregir un pin arrastrado por el usuario, o sacar el nombre de la calle de una coordenada sin geocodificar.
 
 ---
 

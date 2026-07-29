@@ -20,6 +20,8 @@ Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehos
 | 📍 Geocoding, reverse y detección de país (frontera real VE/CO) | Google Geocoding API |
 | 🛣️ Rutas y matriz de distancias reales — con **perfil MOTO** 🛵 | Directions / Distance Matrix |
 | 🧭 Optimización de rutas multi-parada (hasta 50) | Route Optimization API |
+| 🧵 Map matching: traza GPS sucia → calles reales | Map Matching API |
+| 📌 Snap a la vía más cercana + nombre de calle | Directions (nearest) |
 | ⏱️ Isócronas (zonas de cobertura por tiempo) | — (Google no lo ofrece) |
 | 📦 Pedidos con **tracking en vivo para el cliente** + ETA dinámico | — (como Uber Eats, pero tuyo) |
 | 🛵 Despacho al repartidor más cercano (matriz OSRM real) | — |
@@ -72,6 +74,7 @@ examples/
   autocomplete.html    Buscador con sugerencias (patrón debounce)
   cargo-tracker.html   Mapa náutico con buques en vivo y puertos (solo endpoints públicos)
   flota-viva.html      Moticos moviéndose y rotando en vivo (estilo ride-hailing)
+  traza-y-paradas.md   Matriz, orden óptimo (TSP), map matching y snap — sin API key
   android-kotlin.md    Integración Android (MapLibre Native)
   ios-swift.md         Integración iOS (MapLibre Native)
   flutter.md           Integración Flutter (maplibre_gl)
