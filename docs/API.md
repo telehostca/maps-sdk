@@ -38,11 +38,27 @@ GET /data/world.json    planeta z0-7 (cubre la travesía China→VE completa)
 | **Mapa con calles** (tiles, estilos, estático, embed) | **27 áreas**: toda América Latina —Brasil incluido—, España y EE.UU. |
 | Mapa mundial (menor detalle) | el planeta entero |
 | Satélite | mundial. Detalle real hasta z18-z20 según el lugar (más profundo en grandes ciudades) |
-| **Rutas, matriz, TSP, map matching, snap** | **Venezuela y Colombia** |
+| **Rutas, matriz, TSP, map matching, snap** | **21 países**: 🇻🇪 🇨🇴 🇪🇨 🇵🇪 🇧🇴 🇵🇾 🇺🇾 🇨🇱 🇦🇷 🇲🇽 🇬🇹 🇸🇻 🇭🇳 🇳🇮 🇨🇷 🇵🇦 🇧🇿 🇨🇺 🇩🇴 🇵🇷 🇪🇸 |
+| Optimización multiparada (VROOM) | **Venezuela y Colombia** — para el resto usá `trip/v1` (TSP público) |
 | **Geocodificación y autocompletar** | **Venezuela y Colombia** |
 
-O sea: podés **mostrar** el mapa de Ciudad de México, São Paulo o Miami hoy mismo; para
-**rutear o buscar direcciones** ahí, escribinos — agregar un país es un proceso conocido.
+O sea: en México, Santiago o Madrid podés **mostrar el mapa Y rutear**; en São Paulo o Miami
+podés mostrar el mapa pero **no** rutear. Para buscar direcciones, por ahora solo VE y CO.
+
+### ⚠️ Preguntá antes de rutear
+
+```
+GET /api/biz/config/country?lat=&lon=
+→ { "cc":"mx", "ruteable":true,  "ruta_osrm":"/route/mx/" }
+→ { "cc":null, "ruteable":false, "ruta_osrm":null }        ← fuera de cobertura
+```
+
+Es **público y gratis**. Vale la pena porque los dos mundos fallan distinto:
+
+- Los endpoints **con clave** responden **422 `sin-cobertura-de-ruteo`** — un error claro.
+- Los endpoints **públicos de OSRM** devuelven **`code:"Ok"` con `distance: 0`**: pegan los dos
+  puntos a la vía conocida más cercana y la ruta mide cero. **Comprobá siempre
+  `routes[0].distance > 0`** antes de cobrar por esa distancia.
 
 ### Mapa estático PNG (ideal para WhatsApp)
 ```
@@ -86,7 +102,7 @@ GET /route/{perfil}/route/v1/driving/{lonA},{latA};{lonB},{latB}?overview=false
     &overview=full&geometries=geojson|polyline  → línea para dibujar
     &steps=true                                 → giro a giro
 ```
-Perfiles: `ve` · `co` (carro) · **`ve-moto`** 🛵 — la moto filtra tráfico y usa callejones: su ETA urbano es ~15-30 % menor. Es el ETA honesto para delivery en moto.
+Perfiles: los **21 códigos de país** de la tabla de cobertura (carro) · **`ve-moto`** 🛵 — la moto filtra tráfico y usa callejones: su ETA urbano es ~15-30 % menor. Es el ETA honesto para delivery en moto.
 
 ### Matriz de distancias (N×M) — *Distance Matrix*
 ```

@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Mapas, geocoding, rutas, logística de delivery y cargo marítimo.</b><br/>
-  Mapa con calles en <b>27 áreas</b> de América y España · rutas y geocodificación en Venezuela y Colombia.<br/>
+  Mapa con calles en <b>27 áreas</b> · rutas en <b>21 países</b> · geocodificación en Venezuela y Colombia.<br/>
   Infraestructura propia en LATAM · datos OpenStreetMap · sin límites de Google · precios en USD.
 </p>
 
@@ -19,7 +19,7 @@ Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehos
 | 🗺️ Mapas vectoriales — **27 áreas** con calles (LATAM, España, EE.UU.) + planeta | Google Maps SDK / Mapbox |
 | 🔎 Autocomplete tolerante a errores | Google Places Autocomplete |
 | 📍 Geocoding, reverse y detección de país (frontera real VE/CO) | Google Geocoding API |
-| 🛣️ Rutas y matriz de distancias reales — con **perfil MOTO** 🛵 | Directions / Distance Matrix |
+| 🛣️ Rutas y matriz en **21 países** — con **perfil MOTO** 🛵 | Directions / Distance Matrix |
 | 🧭 Optimización de rutas multi-parada (hasta 50) | Route Optimization API |
 | 🧵 Map matching: traza GPS sucia → calles reales | Map Matching API |
 | 📌 Snap a la vía más cercana + nombre de calle | Directions (nearest) |
