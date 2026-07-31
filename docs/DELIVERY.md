@@ -15,7 +15,7 @@ lo dice con un `422` claro, **nunca** con una distancia inventada.
 ## El flujo completo
 
 ```
-cliente elige a dónde (buscar 🟢: 10,6 M negocios + direcciones, sesgado a su ubicación)
+cliente elige a dónde (buscar 🟢: 30 M negocios + direcciones, sesgado a su ubicación)
    → cotizás (pay/quote)           ← precio por distancia/tiempo REALES, perfil moto
    → creás el pedido (orders)      ← te da tracking_url + PIN de entrega
    → cobrás (pay/delivery)         ← link + QR, el cliente paga en Bs

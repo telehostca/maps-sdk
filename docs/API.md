@@ -40,7 +40,7 @@ GET /data/world.json    planeta z0-7 (cubre la travesía China→VE completa)
 | Satélite | mundial. Detalle real hasta z18-z20 según el lugar (más profundo en grandes ciudades) |
 | **Rutas, matriz, TSP, map matching, snap** | **27 zonas**: 🇻🇪 🇨🇴 🇪🇨 🇵🇪 🇧🇴 🇵🇾 🇺🇾 🇨🇱 🇦🇷 🇲🇽 🇬🇹 🇸🇻 🇭🇳 🇳🇮 🇨🇷 🇵🇦 🇧🇿 🇨🇺 🇩🇴 🇵🇷 🇪🇸 🇧🇷 + EE.UU. en 5 regiones (`us-northeast` `us-midwest` `us-south` `us-west` `us-pacific`). ⚠ En EE.UU. no se rutea de una región a otra |
 | Optimización multiparada (VROOM) | **Venezuela y Colombia** — para el resto usá `trip/v1` (TSP público) |
-| **Directorio: negocios y direcciones** | **todo el mapa** — 10,6 M negocios (Overture). Direcciones calle-y-número donde el catastro es público: 🇲🇽 30,7 M · 🇪🇸 15,1 M · 🇨🇴 7,8 M · 🇨🇱 4,1 M · 🇺🇾 1,1 M + EE.UU. y 🇧🇷 |
+| **Directorio: negocios y direcciones** | **todo el mapa** — 30,2 M negocios (Overture, EE.UU. incluido). Direcciones calle-y-número donde el catastro es público: 🇧🇷 89,9 M · 🇲🇽 30,7 M · 🇪🇸 15,1 M · 🇨🇴 7,8 M · 🇨🇱 4,1 M · 🇺🇾 1,1 M (EE.UU. próximamente) |
 | Geocodificación clásica y autocompletar | **Venezuela y Colombia** (datos OSM; complementa al directorio) |
 
 O sea: en México, Santiago o Madrid podés **mostrar el mapa Y rutear**; en São Paulo o Miami
@@ -82,7 +82,7 @@ Respuesta: GeoJSON `FeatureCollection`; cada feature trae `properties.name/city/
 
 ### Búsqueda y reverse (Nominatim)
 ```
-# ── Buscar en el directorio (10,6 M negocios + 82,7 M direcciones) ────────────
+# ── Buscar en el directorio (30,2 M negocios + 168,5 M direcciones) ────────────
 # La ubicación MANDA: la búsqueda parte de lat/lon y abre anillos (25→100→400 km).
 # `radio_km` dice a qué distancia apareció el resultado. Público, con rate limit.
 GET /api/biz/buscar?q=farmacia&lat=19.43&lon=-99.13&limit=5

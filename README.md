@@ -2,7 +2,7 @@
 
 <p align="center">
   <b>Mapas, geocoding, rutas, logística de delivery y cargo marítimo.</b><br/>
-  Mapa con calles en <b>27 áreas</b> · rutas en <b>27 zonas</b> (EE.UU. incluido) · directorio de <b>10,6 M negocios</b> y <b>82,7 M direcciones</b>.<br/>
+  Mapa con calles en <b>27 áreas</b> · rutas en <b>27 zonas</b> (EE.UU. incluido) · directorio de <b>30 M negocios</b> y <b>168 M direcciones</b>.<br/>
   Infraestructura propia en LATAM · datos OpenStreetMap · sin límites de Google · precios en USD.
 </p>
 
@@ -17,7 +17,7 @@ Una plataforma de mapas y logística operada por [TeleHost C.A.](https://telehos
 | Capacidad | Reemplaza a |
 |---|---|
 | 🗺️ Mapas vectoriales — **27 áreas** con calles (LATAM, España, EE.UU.) + planeta | Google Maps SDK / Mapbox |
-| 🔎 Búsqueda de negocios y direcciones **por ubicación** — 10,6 M lugares (Overture) | Google Places / Text Search |
+| 🔎 Búsqueda de negocios y direcciones **por ubicación** — 30 M lugares (Overture) | Google Places / Text Search |
 | 🔎 Autocomplete tolerante a errores (VE+CO) | Google Places Autocomplete |
 | 📍 Geocoding, reverse y detección de país (frontera real VE/CO) | Google Geocoding API |
 | 🛣️ Rutas y matriz en **27 zonas** (22 países + 5 regiones de EE.UU.) — con **perfil MOTO** 🛵 | Directions / Distance Matrix |
