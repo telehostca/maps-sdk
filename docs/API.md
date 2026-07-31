@@ -40,7 +40,7 @@ GET /data/world.json    planeta z0-7 (cubre la travesía China→VE completa)
 | Satélite | mundial. Detalle real hasta z18-z20 según el lugar (más profundo en grandes ciudades) |
 | **Rutas, matriz, TSP, map matching, snap** | **27 zonas**: 🇻🇪 🇨🇴 🇪🇨 🇵🇪 🇧🇴 🇵🇾 🇺🇾 🇨🇱 🇦🇷 🇲🇽 🇬🇹 🇸🇻 🇭🇳 🇳🇮 🇨🇷 🇵🇦 🇧🇿 🇨🇺 🇩🇴 🇵🇷 🇪🇸 🇧🇷 + EE.UU. en 5 regiones (`us-northeast` `us-midwest` `us-south` `us-west` `us-pacific`). ⚠ En EE.UU. no se rutea de una región a otra |
 | Optimización multiparada (VROOM) | **Venezuela y Colombia** — para el resto usá `trip/v1` (TSP público) |
-| **Directorio: negocios y direcciones** | **todo el mapa** — 30,2 M negocios (Overture, EE.UU. incluido). Direcciones calle-y-número donde el catastro es público: 🇧🇷 89,9 M · 🇲🇽 30,7 M · 🇪🇸 15,1 M · 🇨🇴 7,8 M · 🇨🇱 4,1 M · 🇺🇾 1,1 M (EE.UU. próximamente) |
+| **Directorio: negocios, barrios y direcciones** | **todo el mapa** — 30,2 M negocios + **856 K barrios/urbanizaciones** (categoria `barrio`/`localidad`: la búsqueda criolla — "prados del este" desde Barinas devuelve el barrio a 5 km). Direcciones calle-y-número donde el catastro es público: 🇧🇷 89,9 M · 🇲🇽 30,7 M · 🇪🇸 15,1 M · 🇨🇴 7,8 M · 🇨🇱 4,1 M · 🇺🇾 1,1 M (EE.UU. próximamente) |
 | Geocodificación clásica y autocompletar | **Venezuela y Colombia** (datos OSM; complementa al directorio) |
 
 O sea: en México, Santiago o Madrid podés **mostrar el mapa Y rutear**; en São Paulo o Miami
