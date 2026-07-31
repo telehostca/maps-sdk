@@ -8,10 +8,14 @@ export MAPS="https://maps.telehost.net"
 export KEY="thmk_TU_CLAVE"          # solo en tu backend, nunca en la app
 ```
 
+Funciona en las **27 zonas de ruteo** (22 países + las 5 regiones de EE.UU.). El precio
+siempre sale de la distancia REAL por vías — y si un punto cae fuera de cobertura la API
+lo dice con un `422` claro, **nunca** con una distancia inventada.
+
 ## El flujo completo
 
 ```
-cliente elige dirección (autocomplete 🟢)
+cliente elige a dónde (buscar 🟢: 10,6 M negocios + direcciones, sesgado a su ubicación)
    → cotizás (pay/quote)           ← precio por distancia/tiempo REALES, perfil moto
    → creás el pedido (orders)      ← te da tracking_url + PIN de entrega
    → cobrás (pay/delivery)         ← link + QR, el cliente paga en Bs
@@ -25,6 +29,21 @@ cliente elige dirección (autocomplete 🟢)
 El cliente recibe además WhatsApp automático en cada paso (recibido → en camino → cerca → entregado) si pasás su `telefono` — sin que tu app haga nada.
 
 ---
+
+## 0 · Encontrar el destino — la búsqueda parte de donde ESTÁ el cliente
+
+```bash
+# público, sin llave. lat/lon = la ubicación del cliente: si está en México ve México.
+curl "$MAPS/api/biz/buscar?q=farmacia+guerrero&lat=19.4326&lon=-99.1332&limit=5"
+# → negocios[{nombre,categoria,ciudad,lat,lon,km}] + direcciones[{etiqueta,lat,lon,km}]
+
+# direcciones con número de calle (donde el catastro es público: MX ES CO CL UY + EE.UU. y BR):
+curl "$MAPS/api/biz/buscar?q=gran+via+28&lat=40.42&lon=-3.70&tipo=direcciones"
+# → "28 CALLE GRAN VIA, Madrid, 28013" con lat/lon exactos
+```
+
+El `lat/lon` del resultado elegido es el `dest` de la cotización. En VE+CO también está
+`/autocomplete` (Photon, tolerante a errores de tipeo) y `/geocode/search` (Nominatim).
 
 ## 1 · Cotizar — el precio se calcula por vías reales, no línea recta
 
@@ -41,7 +60,11 @@ curl -X POST "$MAPS/api/biz/pay/quote" -H "x-api-key: $KEY" -H "Content-Type: ap
 
 - **`vehiculo:"moto"`** usa el grafo MOTO 🛵: en ciudad la moto filtra tráfico — su ETA es 15-30 % menor que el de carro. Es la diferencia entre prometer "25 min" y cumplir "18".
 - `combustible` te dice cuánta gasolina cuesta el viaje — para tu margen o para pagarle al repartidor. También suelto: `GET /api/biz/delivery/combustible?km=12.4&ida_vuelta=true`.
-- El país se detecta solo por el origen (frontera real VE/CO — Cúcuta y San Cristóbal se resuelven bien).
+- La zona se detecta sola con polígonos reales — **origen Y destino**. Tres errores posibles, todos `422` y todos a propósito (jamás una distancia inventada):
+  - `sin-cobertura-de-ruteo` — un punto cae donde no hay grafo (`pais` te dice dónde).
+  - `ruta-cruza-cobertura` — origen y destino en zonas distintas (p. ej. Chicago→Nueva York: EE.UU. rutea POR REGIÓN).
+  - `punto-fuera-del-grafo` — OSRM tuvo que "pegar" un punto a más de 10 km de una vía: esa ruta sería ficción.
+  Verificá antes con `GET /api/biz/config/country?lat=&lon=` (público, cacheable).
 
 ## 2 · Crear el pedido — tracking para el cliente sin construir nada
 
@@ -147,7 +170,26 @@ curl -X POST "$MAPS/api/biz/route/optimize" -H "x-api-key: $KEY" -H "Content-Typ
 # → orden óptimo de paradas + ETA por parada + geometry (polyline5) para dibujar
 ```
 
-## 8 · Zonas de cobertura y tarifas por anillo
+## 8 · Navegación del repartidor — giro a giro en español
+
+El mismo motor que cotiza sirve la navegación. Para la app del conductor:
+
+```bash
+GET $MAPS/route/ve-moto/route/v1/driving/{olon},{olat};{dlon},{dlat}?steps=true&alternatives=true&geometries=geojson&overview=full
+# → routes[] (la más rápida + alternativas), cada una con legs[0].steps[]:
+#   steps[i].maneuver = { type, modifier, location }  ← "turn"+"left" = "girá a la izquierda"
+#   steps[i].name, steps[i].distance, steps[i].duration
+```
+
+- El texto de cada giro lo arma el cliente desde `maneuver.type/modifier` (así funciona
+  también osrm-text-instructions, con 30 idiomas). El visor de maps.telehost.net ya lo
+  hace en español — miralo con el botón 🧭 de cualquier resultado.
+- Para navegación guiada con voz dentro de tu app móvil: **MapLibre Navigation**
+  (Android/iOS, open source) consume exactamente esta respuesta. No hay nada que
+  construir del lado del servidor.
+- `alternatives=true` te da hasta 2 rutas más: mostralas en gris y dejá elegir.
+
+## 9 · Zonas de cobertura y tarifas por anillo
 
 ```bash
 # ¿hasta dónde llego en 10 min desde el local? (polígono real, sigue las vías)

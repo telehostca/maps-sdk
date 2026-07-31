@@ -38,9 +38,10 @@ GET /data/world.json    planeta z0-7 (cubre la travesía China→VE completa)
 | **Mapa con calles** (tiles, estilos, estático, embed) | **27 áreas**: toda América Latina —Brasil incluido—, España y EE.UU. |
 | Mapa mundial (menor detalle) | el planeta entero |
 | Satélite | mundial. Detalle real hasta z18-z20 según el lugar (más profundo en grandes ciudades) |
-| **Rutas, matriz, TSP, map matching, snap** | **21 países**: 🇻🇪 🇨🇴 🇪🇨 🇵🇪 🇧🇴 🇵🇾 🇺🇾 🇨🇱 🇦🇷 🇲🇽 🇬🇹 🇸🇻 🇭🇳 🇳🇮 🇨🇷 🇵🇦 🇧🇿 🇨🇺 🇩🇴 🇵🇷 🇪🇸 |
+| **Rutas, matriz, TSP, map matching, snap** | **27 zonas**: 🇻🇪 🇨🇴 🇪🇨 🇵🇪 🇧🇴 🇵🇾 🇺🇾 🇨🇱 🇦🇷 🇲🇽 🇬🇹 🇸🇻 🇭🇳 🇳🇮 🇨🇷 🇵🇦 🇧🇿 🇨🇺 🇩🇴 🇵🇷 🇪🇸 🇧🇷 + EE.UU. en 5 regiones (`us-northeast` `us-midwest` `us-south` `us-west` `us-pacific`). ⚠ En EE.UU. no se rutea de una región a otra |
 | Optimización multiparada (VROOM) | **Venezuela y Colombia** — para el resto usá `trip/v1` (TSP público) |
-| **Geocodificación y autocompletar** | **Venezuela y Colombia** |
+| **Directorio: negocios y direcciones** | **todo el mapa** — 10,6 M negocios (Overture). Direcciones calle-y-número donde el catastro es público: 🇲🇽 30,7 M · 🇪🇸 15,1 M · 🇨🇴 7,8 M · 🇨🇱 4,1 M · 🇺🇾 1,1 M + EE.UU. y 🇧🇷 |
+| Geocodificación clásica y autocompletar | **Venezuela y Colombia** (datos OSM; complementa al directorio) |
 
 O sea: en México, Santiago o Madrid podés **mostrar el mapa Y rutear**; en São Paulo o Miami
 podés mostrar el mapa pero **no** rutear. Para buscar direcciones, por ahora solo VE y CO.
@@ -81,6 +82,17 @@ Respuesta: GeoJSON `FeatureCollection`; cada feature trae `properties.name/city/
 
 ### Búsqueda y reverse (Nominatim)
 ```
+# ── Buscar en el directorio (10,6 M negocios + 82,7 M direcciones) ────────────
+# La ubicación MANDA: la búsqueda parte de lat/lon y abre anillos (25→100→400 km).
+# `radio_km` dice a qué distancia apareció el resultado. Público, con rate limit.
+GET /api/biz/buscar?q=farmacia&lat=19.43&lon=-99.13&limit=5
+    → { "radio_km":25, "negocios":[{ "nombre","categoria","ciudad","pais","lat","lon","km","confianza" }],
+        "direcciones":[{ "etiqueta","calle","numero","cp","ciudad","lat","lon","km" }] }
+GET /api/biz/buscar?q=gran+via+28&lat=40.42&lon=-3.70&tipo=direcciones
+GET /api/biz/cerca?lat=&lon=&km=3&limit=10     # qué hay alrededor, para sugerir al abrir el mapa
+GET /api/biz/config/cobertura                  # qué zonas rutean y qué países tienen catastro
+
+# ── Geocodificación clásica (VE+CO, datos OSM) ────────────────────────────────
 GET /geocode/search?q={texto}&format=jsonv2&countrycodes=ve,co&limit=5&accept-language=es
 GET /geocode/reverse?lat=&lon=&format=jsonv2&zoom=18&accept-language=es
 ```
