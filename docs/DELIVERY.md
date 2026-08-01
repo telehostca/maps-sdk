@@ -58,7 +58,7 @@ curl -X POST "$MAPS/api/biz/pay/quote" -H "x-api-key: $KEY" -H "Content-Type: ap
   "tarifa": { "base":1, "per_km":0.5, "per_min":0.05, "minimo":1.5 } }
 ```
 
-- **`vehiculo:"moto"`** usa el grafo MOTO 🛵: en ciudad la moto filtra tráfico — su ETA es 15-30 % menor que el de carro. Es la diferencia entre prometer "25 min" y cumplir "18".
+- **`vehiculo:"moto"`** usa el grafo MOTO 🛵: en vías de superficie la moto filtra tráfico: medido 21-27 % menos en Maracaibo y Barinas. En rutas por autopista la diferencia es 0-1 % (el perfil le da menos punta a propósito). Es la diferencia entre prometer "25 min" y cumplir "18".
 - `combustible` te dice cuánta gasolina cuesta el viaje — para tu margen o para pagarle al repartidor. También suelto: `GET /api/biz/delivery/combustible?km=12.4&ida_vuelta=true`.
 - La zona se detecta sola con polígonos reales — **origen Y destino**. Tres errores posibles, todos `422` y todos a propósito (jamás una distancia inventada):
   - `sin-cobertura-de-ruteo` — un punto cae donde no hay grafo (`pais` te dice dónde).
