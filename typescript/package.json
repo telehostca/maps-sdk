@@ -1,0 +1,55 @@
+{
+  "name": "@telehost/maps",
+  "version": "0.1.0",
+  "description": "Cliente TypeScript de TeleHost Maps \u2014 rutas, giro a giro en espa\u00f1ol, b\u00fasqueda de negocios y direcciones en Am\u00e9rica Latina, Espa\u00f1a y EE.UU. Funciona en React Native, navegador y Node.",
+  "keywords": [
+    "maps",
+    "routing",
+    "osrm",
+    "geocoding",
+    "react-native",
+    "latam",
+    "venezuela",
+    "delivery",
+    "maplibre",
+    "openstreetmap"
+  ],
+  "license": "MIT",
+  "author": "TeleHost C.A. <info.telehost@gmail.com>",
+  "homepage": "https://maps.telehost.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/telehostca/maps-sdk.git",
+    "directory": "typescript"
+  },
+  "bugs": "https://github.com/telehostca/maps-sdk/issues",
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/*.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
