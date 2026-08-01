@@ -1,0 +1,16 @@
+name: telehost_maps
+description: Cliente Dart de TeleHost Maps — rutas, giro a giro en español, búsqueda de negocios y direcciones en América Latina, España y EE.UU. Alternativa a Google Maps Platform.
+version: 0.1.0
+repository: https://github.com/telehostca/maps-sdk
+issue_tracker: https://github.com/telehostca/maps-sdk/issues
+documentation: https://maps.telehost.net/dev/
+
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  http: ^1.2.0
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0

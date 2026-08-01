@@ -88,6 +88,24 @@ examples/
   backend-api.md       Flujo completo de delivery desde tu backend (API key)
 ```
 
+## Flutter: paquete oficial
+
+```yaml
+dependencies:
+  telehost_maps: ^0.1.0   # cliente de datos (rutas, búsqueda, giro a giro en español)
+  maplibre_gl: ^0.20.0    # el mapa en pantalla
+```
+
+```dart
+final maps = TeleHostMaps();
+final r = await maps.buscar('farmacia', cerca: const Punto(10.4939, -66.8772));
+final rutas = await maps.ruta(yo, r.lugares.first.punto, moto: true);
+for (final p in rutas.first.pasos) print(p.instruccion);  // "Girá a la izquierda por…"
+```
+
+Trae incorporadas las guardas que evitan cobrar distancias inventadas. Código y
+documentación en [`flutter/`](flutter/).
+
 ## Apps móviles sin SDK de Google
 
 Tu app Android/iOS/Flutter usa **[MapLibre Native](https://maplibre.org/)** (open source) apuntando al estilo de TeleHost:
