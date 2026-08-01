@@ -1,4 +1,4 @@
-# @telehost/maps
+# @telehostnet/maps
 
 Cliente TypeScript de **[TeleHost Maps](https://maps.telehost.net)** — el mapa
 propio de TeleHost C.A. Rutas, giro a giro **en español**, y búsqueda de
@@ -11,13 +11,13 @@ Funciona igual en **React Native**, **navegador** y **Node ≥18** — solo usa
 `fetch`, sin dependencias.
 
 ```bash
-npm i @telehost/maps
+npm i @telehostnet/maps
 ```
 
 ## En 20 segundos
 
 ```ts
-import { TeleHostMaps } from "@telehost/maps";
+import { TeleHostMaps } from "@telehostnet/maps";
 
 const maps = new TeleHostMaps();               // sin API key: casi todo es público
 const yo = { lat: 10.4939, lon: -66.8772 };    // Sabana Grande, Caracas
@@ -53,7 +53,7 @@ e inventada. Medido en producción: Bogotá→Caracas devolvía `"Ok" · 991 km`
 pegando Caracas a 457 km. Acá eso lanza `PuntoFueraDelGrafo`.
 
 ```ts
-import { RutaCruzaZonas, SinCobertura, PuntoFueraDelGrafo } from "@telehost/maps";
+import { RutaCruzaZonas, SinCobertura, PuntoFueraDelGrafo } from "@telehostnet/maps";
 
 try {
   const [ruta] = await maps.ruta(origen, destino);
@@ -82,7 +82,7 @@ Este paquete es el **cliente de datos**. Para dibujar el mapa usá
 
 ```tsx
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import { TeleHostMaps } from "@telehost/maps";
+import { TeleHostMaps } from "@telehostnet/maps";
 
 const maps = new TeleHostMaps();
 

@@ -93,18 +93,18 @@ examples/
 | plataforma | paquete | registro |
 |---|---|---|
 | **Flutter / Dart** | [`telehost_maps`](https://pub.dev/packages/telehost_maps) | pub.dev |
-| **React Native · web · Node** | [`@telehost/maps`](https://www.npmjs.com/package/@telehost/maps) | npm |
+| **React Native · web · Node** | [`@telehostnet/maps`](https://www.npmjs.com/package/@telehostnet/maps) | npm |
 
 Los dos traen la misma API y **las mismas guardas** contra las trampas del ruteo
 (distancia de *snap*, rutas que cruzan zonas, el `200 con HTML` del gateway) y el
 giro a giro en español ya escrito.
 
 ```bash
-npm i @telehost/maps          # React Native, web, Node ≥18
+npm i @telehostnet/maps          # React Native, web, Node ≥18
 ```
 
 ```ts
-import { TeleHostMaps } from "@telehost/maps";
+import { TeleHostMaps } from "@telehostnet/maps";
 const maps = new TeleHostMaps();
 const r = await maps.buscar("farmacia", { cerca: { lat: 10.4939, lon: -66.8772 } });
 const [ruta] = await maps.ruta(yo, r.lugares[0].punto, { moto: true });

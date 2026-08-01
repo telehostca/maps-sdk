@@ -1,5 +1,5 @@
 {
-  "name": "@telehost/maps",
+  "name": "@telehostnet/maps",
   "version": "0.1.0",
   "description": "Cliente TypeScript de TeleHost Maps \u2014 rutas, giro a giro en espa\u00f1ol, b\u00fasqueda de negocios y direcciones en Am\u00e9rica Latina, Espa\u00f1a y EE.UU. Funciona en React Native, navegador y Node.",
   "keywords": [

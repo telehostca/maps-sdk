@@ -8,7 +8,7 @@
  * Funciona igual en **React Native**, navegador y **Node ≥18**: solo usa `fetch`.
  *
  * ```ts
- * import { TeleHostMaps } from "@telehost/maps";
+ * import { TeleHostMaps } from "@telehostnet/maps";
  *
  * const maps = new TeleHostMaps();
  * const yo = { lat: 10.4939, lon: -66.8772 };          // Sabana Grande, Caracas
