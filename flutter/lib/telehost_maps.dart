@@ -24,3 +24,4 @@ export 'src/cliente.dart';
 export 'src/errores.dart';
 export 'src/instrucciones.dart' show instruccionEnEspanol, distanciaLegible, duracionLegible;
 export 'src/modelos.dart';
+export 'src/marca.dart' show MarcaTeleHost;

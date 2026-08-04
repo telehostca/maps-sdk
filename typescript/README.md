@@ -121,6 +121,25 @@ const maps = new TeleHostMaps({ apiKey: process.env.MAPS_KEY });
 
 El mismo cliente para Dart: [`telehost_maps`](https://pub.dev/packages/telehost_maps).
 
+## La marca, puesta
+
+```ts
+import { controlDeMarca } from "@telehostnet/maps";
+
+const marca = controlDeMarca();
+map.addControl(marca, "bottom-left");
+marca.tema(true);            // al pasar a satélite
+```
+
+El isotipo va inline: sin pedirlo a la red y sin depender de tu dominio.
+
+En React Native el mapa es nativo y no hay DOM: usá `MARCA` (colores, texto,
+enlace, isotipo) para armar la misma píldora con un `View`.
+
+**La atribución legal no hay que escribirla** — viaja dentro del `style.json` y
+MapLibre la muestra sola, en web y en nativo. Si además mostrás resultados de
+`buscar()`, agregá `ATRIBUCION_OVERTURE`: los negocios son datos de Overture.
+
 ## Atribución
 
 Mostrá en tu mapa: *© OpenStreetMap contributors · Overture Maps · TeleHost Maps*.

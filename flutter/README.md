@@ -111,6 +111,25 @@ Se pide en [maps.telehost.net/dev](https://maps.telehost.net/dev/) y va
 final maps = TeleHostMaps(apiKey: Platform.environment['MAPS_KEY']);
 ```
 
+## La marca, puesta
+
+```dart
+import 'package:telehost_maps/telehost_maps.dart';
+
+Stack(children: [
+  MapLibreMap(styleString: maps.urlEstilo(), /* … */),
+  const Positioned(left: 10, bottom: 10, child: MarcaTeleHost()),
+])
+```
+
+Sobre satélite o híbrido: `MarcaTeleHost(oscuro: true)`.
+
+El isotipo se dibuja, no se descarga: se ve igual con el teléfono sin señal.
+
+**La atribución legal no hay que dibujarla** — viaja dentro del `style.json` y
+MapLibre la muestra sola. Lo único que tenés que hacer es **no esconder** el
+botón de atribución del mapa: es la licencia ODbL de OpenStreetMap.
+
 ## Atribución
 
 Mostrá en tu mapa: *© OpenStreetMap contributors · Overture Maps · TeleHost Maps*.

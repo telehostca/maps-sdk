@@ -37,3 +37,4 @@ export {
 export type {
   Punto, Lugar, Direccion, Resultados, Paso, Ruta, Zona, FilaMatriz, TipoBusqueda,
 } from "./tipos.js";
+export { controlDeMarca, MARCA, ATRIBUCION_OVERTURE, type OpcionesMarca } from "./marca.js";
