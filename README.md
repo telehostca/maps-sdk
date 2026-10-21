@@ -136,7 +136,6 @@ Tu app Android/iOS/Flutter usa **[MapLibre Native](https://maplibre.org/)** (ope
 
 ```
 https://maps.telehost.net/styles/telehost/style.json    ← calles (estilo de la casa)
-https://maps.telehost.net/styles/hybrid/style.json      ← satélite + etiquetas
 https://maps.telehost.net/styles/cargo/style.json       ← náutico mundial (para cargo)
 ```
 
@@ -154,10 +153,30 @@ Las funciones de producto (pedidos, despacho, cobro, optimización, isócronas, 
 
 Los endpoints públicos (mapa, geocoding, autocomplete, rutas, buques por zona, puertos) están abiertos para desarrollo y evaluación, con límites suaves por IP. Para producción con volumen, pedí tu clave — así mantenemos el servicio rápido para todos.
 
-## Atribuciones
+## Capa de lluvia animada (global)
 
-- Datos de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Muestra la atribución en tu mapa.
-- Imágenes satelitales © Esri World Imagery (atribución requerida).
+El mapa puede pintar la lluvia **ahora y en la próxima hora** como un campo tipo radar, en cualquier parte
+del mundo: embed → `https://maps.telehost.net/embed/?lat=10.49&lng=-66.85&z=11&clima=1`; SDK web →
+`TeleHostMap.create('mapa', { clima: true })`. Datos crudos para apps nativas:
+`GET https://maps.telehost.net/api/biz/clima/malla?bbox=minLon,minLat,maxLon,maxLat` (público) y
+`GET /api/biz/clima?lat&lon` (nivel `normal · lluvia · lluvia_fuerte · tormenta` + `proxima_hora`).
+
+## Atribución obligatoria y términos de uso
+
+Toda app o sitio que use el mapa debe mostrar, **visible o a un toque desde la vista de mapa**:
+
+```
+© OpenStreetMap contributors · Overture Maps · Google · Microsoft · Natural Earth · Mapas por TeleHost Maps
+```
+
+Con el `style.json` oficial y estos SDK la atribución viene incluida: **no desactives el control de
+atribución de MapLibre** ni reemplaces el estilo por uno que la omita. En el plan gratuito y en el embed la
+marca «Mapas por TeleHost Maps» no se quita; en planes pagos con marca blanca sí, pero la atribución a los
+datos de base permanece siempre. El Servicio **no incluye imágenes satelitales**: si tu app las necesita,
+contrátalas con tu propia cuenta del proveedor. Términos completos, tabla de componentes para la pantalla
+«Licencias» y constancia para App Store / Play Store: **https://maps.telehost.net/terminos**
+
+- Datos de mapa © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL) · directorio y edificios © [Overture Maps](https://overturemaps.org) (CDLA-Permissive 2.0; incluye Google Open Buildings CC-BY-4.0 y Microsoft Building Footprints ODbL).
 - Basemap mundial: [Natural Earth](https://www.naturalearthdata.com/) (dominio público).
 - Puertos: World Port Index (NGA) + UN/LOCODE.
 - Render: [MapLibre](https://maplibre.org/) (BSD-3). Rutas: [OSRM](http://project-osrm.org/). Geocoding: [Nominatim](https://nominatim.org/) / [Photon](https://photon.komoot.io/). Rutas marítimas: red MARNET vía [searoute](https://github.com/eurostat/searoute).
