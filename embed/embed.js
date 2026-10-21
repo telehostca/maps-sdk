@@ -33,8 +33,7 @@
     document.head.appendChild(js);
   }
   function styleUrl(s) {
-    if (s === 'sat' || s === 'satellite' || s === 'hybrid') return BASE + '/styles/hybrid/style.json';
-    if (s === 'satellite-puro') return BASE + '/styles/satellite/style.json';
+    // Sin satélite: no es parte del Servicio licenciado (https://maps.telehost.net/terminos §11).
     if (s === 'liberty') return BASE + '/styles/liberty/style.json';
     return BASE + '/styles/telehost/style.json'; // default: estilo de marca
   }
@@ -105,6 +104,12 @@
               map._thMarker = m;
             }
             map.on('error', function (e) { if (e && e.error) console.warn('[TeleHostMap]', e.error.message || e.error); });
+            // Lluvia animada (2026-10-20): la pinta THM.clima de /lib/thm.js (se carga solo si se pide).
+            if (opts.clima) {
+              var arrancarClima = function () { if (window.THM && THM.clima) THM.clima(map, { base: BASE, leyenda: opts.climaLeyenda !== false }).encender(); };
+              if (window.THM && THM.clima) arrancarClima();
+              else { var th = document.createElement('script'); th.src = BASE + '/lib/thm.js'; th.onload = arrancarClima; document.head.appendChild(th); }
+            }
             map.on('load', function () { if (opts.onReady) opts.onReady(map); resolve(map); });
           } catch (e) { reject(e); }
         }, reject);
